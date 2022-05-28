@@ -51,6 +51,14 @@ async function run() {
                 payment_method_types: ['card']
             });
             res.send({ clientSecret: paymentIntent.client_secret })
+        });
+
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            const isAdmin = user.role === 'admin';
+            res.send({ admin: isAdmin });
         })
 
         app.get('/tools', async (req, res) => {
