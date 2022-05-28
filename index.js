@@ -20,6 +20,8 @@ async function run() {
         const toolsCollection = client.db('goldenWeightTools').collection('tools');
         const ordersCollection = client.db('goldenWeightTools').collection('orders');
         const reviewsCollection = client.db('goldenWeightTools').collection('reviews');
+        const usersCollection = client.db('goldenWeightTools').collection('users');
+        const usersProfileCollection = client.db('goldenWeightTools').collection('userProfile');
 
         app.get('/tools', async (req, res) => {
             const query = {};
@@ -53,6 +55,36 @@ async function run() {
             const result = await reviewsCollection.insertOne(review);
             res.send(result);
         });
+
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const result = await reviewsCollection.find(query).toArray();
+            res.send(result);
+        });
+
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        });
+
+        app.put('/usersProfile/:email', async (req, res) => {
+            const email = req.params.email;
+            const profile = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: profile
+            };
+            const result = await usersProfileCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
 
 
     } finally {
