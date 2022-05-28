@@ -39,6 +39,7 @@ async function run() {
         const reviewsCollection = client.db('goldenWeightTools').collection('reviews');
         const usersCollection = client.db('goldenWeightTools').collection('users');
         const usersProfileCollection = client.db('goldenWeightTools').collection('userProfile');
+        const paymentCollection = client.db('goldenWeightTools').collection('payments');
 
         app.post('/create-payment-intent', verifyJwt, async (req, res) => {
             const order = req.body;
@@ -89,6 +90,21 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await ordersCollection.findOne(query);
             res.send(result);
+        });
+
+        app.patch('/orders/:id', verifyJwt, async (req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    paid: true,
+                    transactionId: payment.transactionId
+                }
+            };
+            const result = await paymentCollection.insertOne(payment);
+            const updatedOrder = await ordersCollection.updateOne(filter, updateDoc);
+            res.send(updatedOrder);
         })
 
         app.post('/reviews', async (req, res) => {
