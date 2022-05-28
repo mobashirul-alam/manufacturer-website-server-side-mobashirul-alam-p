@@ -105,6 +105,13 @@ async function run() {
             const result = await paymentCollection.insertOne(payment);
             const updatedOrder = await ordersCollection.updateOne(filter, updateDoc);
             res.send(updatedOrder);
+        });
+
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await ordersCollection.deleteOne(query);
+            res.send(result);
         })
 
         app.post('/reviews', async (req, res) => {
