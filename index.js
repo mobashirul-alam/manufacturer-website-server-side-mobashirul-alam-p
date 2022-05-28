@@ -168,9 +168,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('Hello World! I am from Golden Weight Tools server.')
+    res.send('Hello World! This is Golden Weight Tools server.')
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Golden Weight is listening on port ${port}`)
 });
