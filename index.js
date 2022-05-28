@@ -19,6 +19,7 @@ async function run() {
         await client.connect();
         const toolsCollection = client.db('goldenWeightTools').collection('tools');
         const ordersCollection = client.db('goldenWeightTools').collection('orders');
+        const reviewsCollection = client.db('goldenWeightTools').collection('reviews');
 
         app.get('/tools', async (req, res) => {
             const query = {};
@@ -45,7 +46,15 @@ async function run() {
             const query = { email: email };
             const result = await ordersCollection.find(query).toArray();
             res.send(result);
-        })
+        });
+
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review);
+            res.send(result);
+        });
+
+
     } finally {
 
     }
