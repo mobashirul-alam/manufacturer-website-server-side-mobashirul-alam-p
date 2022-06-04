@@ -75,6 +75,12 @@ async function run() {
             res.send(result);
         });
 
+        app.post('/tools', verifyJwt, async (req, res) => {
+            const newTool = req.body;
+            const result = await toolsCollection.insertOne(newTool);
+            res.send(result)
+        })
+
         app.post('/orders', async (req, res) => {
             const order = req.body;
             const result = await ordersCollection.insertOne(order);
@@ -157,6 +163,12 @@ async function run() {
             };
             const result = await usersProfileCollection.updateOne(filter, updateDoc, options);
             res.send(result);
+        });
+
+        app.get('/allOrders', verifyJwt, async (req, res) => {
+            const query = {};
+            const orders = await ordersCollection.find(query).toArray();
+            res.send(orders);
         })
 
 
