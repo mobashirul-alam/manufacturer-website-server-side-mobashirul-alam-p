@@ -99,6 +99,21 @@ async function run() {
             }
         });
 
+        app.put('/allOrders/:id', async (req, res) => {
+            const id = req.params.id;
+            const { orderStatus } = req.body;
+            console.log(orderStatus)
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    orderStatus: orderStatus,
+                }
+            };
+            const result = await ordersCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        });
+
         app.get('/orders/:id', verifyJwt, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -151,6 +166,25 @@ async function run() {
             const result = await usersCollection.updateOne(filter, updateDoc, options);
             const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, { expiresIn: '1h' })
             res.send({ result, token });
+        });
+
+        app.get('/allUser', verifyJwt, async (req, res) => {
+            const query = {};
+            const allUsers = await usersCollection.find(query).toArray();
+            res.send(allUsers);
+        });
+
+        app.put('/allUser/:id', verifyJwt, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    role: "admin"
+                }
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
         });
 
         app.put('/usersProfile/:email', async (req, res) => {
